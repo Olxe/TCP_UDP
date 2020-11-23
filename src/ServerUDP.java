@@ -19,12 +19,21 @@ public class ServerUDP {
 
                 server.receive(packet);
 
-                String str = new String(packet.getData());
+                String str = new String(packet.getData()).replaceAll("\0", "");
                 System.out.println("Received from " + packet.getAddress() + " on " + packet.getPort() + " : " + str);
+                String T1client = str;
+                String T1server = new SimpleDateFormat("HH:mm:ss.SSS").format(new Date());
 
                 packet.setLength(buffer.length);
 
-                byte[] buffer2 = new SimpleDateFormat("HH:mm:ss").format(new Date()).getBytes();
+                String T2server = new SimpleDateFormat("HH:mm:ss.SSS").format(new Date());
+
+                String dates = "{" +
+                        "\"T1client\": \"" + T1client + "\", " +
+                        "\"T1server\": \"" + T1server + "\", " +
+                        "\"T2server\": \"" + T2server + "\"}";
+                System.out.println(dates);
+                byte[] buffer2 = dates.getBytes();
                 DatagramPacket packet2 = new DatagramPacket(buffer2, buffer2.length, packet.getAddress(), packet.getPort());
 
                 server.send(packet2);
